@@ -1,5 +1,6 @@
 import { ParsedArgs } from 'minimist';
 import ora from 'ora';
+import { shuffle } from 'lodash';
 
 import { searchMarket, buyOnFleaMarket, sellItem } from '../market';
 import { SortType, SortDirection, CurrencyType, OwnerType } from '../types/market';
@@ -20,6 +21,8 @@ const traders = {
     multiplier: 0.57,
   },
 }
+
+let profitTotal = 0;
 
 const categories = [
   // {
@@ -158,64 +161,71 @@ export default async function auto(argv: ParsedArgs) {
   const locale = await getLocale();
 
   return (async function loop(): Promise<void> {
-    await categories.reduce((p, category) => p.then(async () => {
-      const searchingSpinner = ora(`Searching ${category.name}`).start();
-      const searchResults = await searchMarket({
-        page: 1,
-        limit: 100,
-        sortType: SortType.Price,
-        sortDirection: SortDirection.ASC,
-        currency: CurrencyType.Rouble,
-        removeBartering: true,
-        ownerType: OwnerType.Player,
-        handbookId: category.id,
-      });
-      searchingSpinner.succeed();
-      ora(`Found ${searchResults.offers.length} results`).succeed();
+    await shuffle(categories).reduce((p1, category) => p1.then(async () => {
+      await [1,2].reduce((p2, page) => p2.then(async () => {
+        const searchingSpinner = ora(`Searching ${category.name} (${page}/3)`).start();
+        const searchResults = await searchMarket({
+          page: page,
+          limit: 100,
+          sortType: SortType.Price,
+          sortDirection: SortDirection.ASC,
+          currency: CurrencyType.Rouble,
+          removeBartering: true,
+          ownerType: OwnerType.Player,
+          handbookId: category.id,
+        });
+        searchingSpinner.succeed();
+        ora(`Found ${searchResults.offers.length} results`).succeed();
 
-      const checkingSpinner = ora('Checking for deals').start();
-      const mappedResults = searchResults.offers
-        .map((offer) => ({
-          id: offer._id,
-          raw: offer,
-          profit: (offer.itemsCost * category.trader.multiplier) - offer.requirementsCost,
-        }))
-        .filter((offer) => offer.profit > 1000)
-        .sort((a, b) => b.profit - a.profit);
+        const checkingSpinner = ora('Checking for deals').start();
+        const mappedResults = searchResults.offers
+          .map((offer) => ({
+            id: offer._id,
+            raw: offer,
+            worth: Math.floor(offer.itemsCost * category.trader.multiplier),
+            profit: Math.floor((offer.itemsCost * category.trader.multiplier) - offer.requirementsCost),
+          }))
+          .filter((offer) => offer.profit > 1000)
+          .sort((a, b) => b.profit - a.profit);
 
-      if (!mappedResults.length) {
-        checkingSpinner.fail();
-        ora('No deals found').fail();
-        return waitRandom();
-      }
-
-      checkingSpinner.succeed();
-      ora(`${mappedResults.length} deals found`).succeed();
-
-      await mappedResults.slice(0, 3).reduce((pr, offer) => pr.then(async () => {
-        const buyingSpinner = ora(`Buying ${locale.templates[offer.raw.items[0]._tpl].Name} for ${offer.raw.requirementsCost}, worth ${offer.raw.itemsCost * category.trader.multiplier}`).start();
-        try {
-          await buyOnFleaMarket(offer.raw);
-          buyingSpinner.succeed();
-        } catch (error) {
-          buyingSpinner.fail();
-          ora(error.message).fail();
+        if (!mappedResults.length) {
+          checkingSpinner.fail();
+          ora('No deals found').fail();
           return waitRandom();
         }
 
-        return waitRandom(); // await instead to auto sell
-        const sellingSpinner = ora(`Selling ${locale.templates[offer.raw.items[0]._tpl].Name} for ${offer.raw.itemsCost * category.trader.multiplier}`).start();
-        try {
-          await sellItem(category.trader.id, offer.raw.items[0]._tpl);
-          sellingSpinner.succeed();
-        } catch (error) {
-          sellingSpinner.fail();
-          ora(error.message).fail();
-        }
+        checkingSpinner.succeed();
+        ora(`${mappedResults.length} deals found`).succeed();
 
-        return waitRandom();
+        await mappedResults.slice(0, 3).reduce((p3, offer) => p3.then(async () => {
+          const buyingSpinner = ora(`Buying ${locale.templates[offer.raw.items[0]._tpl].Name} for ${offer.raw.requirementsCost}, worth ${offer.worth}`).start();
+          let buyResponse;
+          try {
+            buyResponse = await buyOnFleaMarket(offer.raw);
+            buyingSpinner.succeed();
+          } catch (error) {
+            buyingSpinner.fail();
+            ora(error.message).fail();
+            return waitRandom();
+          }
+
+          return waitRandom(); // await instead to auto sell
+          const sellingSpinner = ora(`Selling ${locale.templates[offer.raw.items[0]._tpl].Name} for ${offer.worth} (${offer.profit} Profit)`).start();
+          try {
+            const purchasedItem = buyResponse.items.new.find((item) => item._tpl === offer.raw.items[0]._tpl);
+            await sellItem(category.trader.id, purchasedItem._id);
+            sellingSpinner.succeed();
+
+            profitTotal += offer.profit;
+            ora(`${profitTotal} total profit this session`).succeed();
+          } catch (error) {
+            sellingSpinner.fail();
+            ora(error.message).fail();
+          }
+
+          return waitRandom();
+        }), Promise.resolve());
       }), Promise.resolve());
-      return waitRandom();
     }), Promise.resolve());
     return loop();
   })();

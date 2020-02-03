@@ -4,9 +4,9 @@ import { defaultsDeep } from 'lodash';
 import { RAGFAIR_ENDPOINT, TRADING_ENDPOINT, PROD_ENDPOINT, LAUNCHER_ENDPOINT, UNITY_VERSION, GAME_VERSION, LAUNCHER_VERSION } from './constants';
 import { decompress, compress } from './utils';
 import { get } from './storage';
-import { GetProfilesResponse, StartGameResponse, ActivateHardwareResponse, LoginResponse, ApiResponse, SelectProfileResponse, SearchMarketResponse } from './types/responseTypes';
+import { GetProfilesResponse, StartGameResponse, ActivateHardwareResponse, LoginResponse, ApiResponse, SelectProfileResponse, SearchMarketResponse, BuyOnFleaMarketResponse } from './types/responseTypes';
 import { MarketSearch } from './types/market';
-import { ApiError, EnterCaptchaError, NewHardwareError, WrongCredentialsError, WrongActivationCodeError } from './errors';
+import { ApiError, EnterCaptchaError, NewHardwareError, WrongCredentialsError, WrongActivationCodeError, NotAuthorizedError, BadAccountIdError } from './errors';
 
 export async function request(options: OptionsWithUrl): Promise<ApiResponse> {
   const session = await get('auth.session');
@@ -32,6 +32,14 @@ export async function request(options: OptionsWithUrl): Promise<ApiResponse> {
 
   if (response.err !== 0) {
     switch(response.err) {
+      case 201: {
+        console.error(new NotAuthorizedError(response.errmsg));
+        console.error('******');
+        console.error('Please make sure you are authenticated and have started a session');
+        console.error('******');
+        process.exit(1);
+      }
+      case 205: throw new BadAccountIdError(response.errmsg);
       case 206: throw new WrongCredentialsError(response.errmsg);
       case 209: throw new NewHardwareError(response.errmsg);
       case 211: throw new WrongActivationCodeError(response.errmsg);
@@ -139,7 +147,7 @@ export function searchMarketRequest(marketSearch: MarketSearch): Promise<SearchM
   });
 }
 
-export function buyOnFleaMarketRequest(offerId: string, items: any): Promise<ApiResponse> {
+export function buyOnFleaMarketRequest(offerId: string, items: any): Promise<BuyOnFleaMarketResponse> {
   return prodRequest({
     method: 'POST',
     url: '/client/game/profile/items/moving',

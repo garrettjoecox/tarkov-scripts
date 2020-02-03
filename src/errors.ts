@@ -15,6 +15,20 @@ export class ApiError extends Error {
   }
 }
 
+export class NotAuthorizedError extends ApiError {
+  constructor(message?: string) {
+    super(message);
+    this.name = 'NotAuthorizedError';
+  }
+}
+
+export class BadAccountIdError extends ApiError {
+  constructor(message?: string) {
+    super(message);
+    this.name = 'BadAccountIdError';
+  }
+}
+
 export class WrongCredentialsError extends ApiError {
   constructor(message?: string) {
     super(message);

@@ -56,16 +56,8 @@ export async function buyItem() {
 
 }
 
-export async function sellItem(traderId: string, handbookId: string) {
-  const profiles = await getProfiles();
-  const profile = profiles.find((profile) => profile.Info.Side !== ProfileSide.Savage);
-  const items = profile.Inventory.items
-    .filter((item) => item._tpl === handbookId);
-
-  if (!items.length) throw new Error('Item not found');
-  const item = items[0];
-
-  const response = await sellToTraderRequest(traderId, item._id, 1);
+export async function sellItem(traderId: string, itemId: string) {
+  const response = await sellToTraderRequest(traderId, itemId, 1);
 
   return response.data;
 }

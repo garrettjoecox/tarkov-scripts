@@ -51,3 +51,18 @@ export interface SearchMarketResponse extends ApiResponse {
     offersCount: number;
   };
 }
+
+export interface BuyOnFleaMarketResponse extends ApiResponse {
+  data: {
+    items: {
+      new: {
+        _id: string;
+        _tpl: string;
+      }[],
+    },
+    badRequest: {
+      err: number;
+      errmsg: null | string;
+    }[]
+  },
+}
