@@ -1,21 +1,42 @@
-import { readJson, writeJson } from 'fs-extra';
+import { readJson, writeJson, pathExists } from 'fs-extra';
 import _ from 'lodash';
 import { resolve } from 'path';
 
 const STORAGE_PATH = resolve(__dirname, '../storage.json');
+let storage: {
+  hwCode?: string;
+  auth?: {
+    email?: string;
+    password?: string;
+    accessToken?: string;
+    refreshToken?: string;
+    tokenExpiration?: number;
+    session?: string;
+  }
+};
 
 export async function get(path: string, defaultValue?: any) {
-  const data = await readJson(STORAGE_PATH);
+  await loadStorage();
 
-  return _.get(data, path, defaultValue);
+  return _.get(storage, path, defaultValue);
 }
 
 export async function set(path: string, value: any) {
-  const data = await readJson(STORAGE_PATH);
+  await loadStorage();
 
-  _.set(data, path, value);
+  _.set(storage, path, value);
 
-  await writeJson(STORAGE_PATH, data, { spaces: 2 });
+  await writeJson(STORAGE_PATH, storage, { spaces: 2 });
 
-  return data;
+  return storage;
+}
+
+async function loadStorage() {
+  if (!storage) {
+    if (await pathExists(STORAGE_PATH)) {
+      storage = await readJson(STORAGE_PATH);
+    } else {
+      storage = {};
+    }
+  }
 }

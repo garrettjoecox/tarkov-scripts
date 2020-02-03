@@ -52,7 +52,7 @@ export function hashString(string: string): string {
   return createHash('md5').update(string).digest('hex');
 }
 
-export function waitRandom(min: number = 3000, max: number = 15000): Promise<void> {
+export function waitRandom(min: number = 2000, max: number = 5000): Promise<void> {
   const ms = random(min, max);
   return new Promise(r => setTimeout(r, ms));
 }
