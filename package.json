@@ -1,0 +1,37 @@
+{
+  "name": "tarkov-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "bin": {
+    "tarkov": "./dist/index.js"
+  },
+  "scripts": {
+    "start": "ts-node src/index",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "global": "npm run build && npm i -g"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "^8.1.0",
+    "inquirer": "^7.0.4",
+    "lodash": "^4.17.15",
+    "minimist": "^1.2.0",
+    "ora": "^4.0.3",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.8"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^8.0.1",
+    "@types/inquirer": "^6.5.0",
+    "@types/lodash": "^4.14.149",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^13.5.0",
+    "@types/ora": "^3.2.0",
+    "@types/request-promise-native": "^1.0.17",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  }
+}
