@@ -86,11 +86,6 @@ const categories = [
   //   trader: traders.skier,
   // },
   // {
-  //   name: 'Receivers & slides',
-  //   id: '5b5f764186f77447ec5d7714',
-  //   trader: traders.skier,
-  // },
-  // {
   //   name: 'Barrels',
   //   id: '5b5f75c686f774094242f19f',
   //   trader: traders.skier,
@@ -98,6 +93,21 @@ const categories = [
   // {
   //   name: 'Sights',
   //   id: '5b5f73ec86f774093e6cb4fd',
+  //   trader: traders.skier,
+  // },
+  // {
+  //   name: 'Muzzle adapters',
+  //   id: '5b5f72f786f77447ec5d7702',
+  //   trader: traders.skier,
+  // },
+  // {
+  //   name: 'Mounts',
+  //   id: '5b5f755f86f77447ec5d770e',
+  //   trader: traders.skier,
+  // },
+  // {
+  //   name: 'Receivers & slides',
+  //   id: '5b5f764186f77447ec5d7714',
   //   trader: traders.skier,
   // },
   // {
@@ -185,7 +195,7 @@ export default async function auto(argv: ParsedArgs) {
             worth: Math.floor(offer.itemsCost * category.trader.multiplier),
             profit: Math.floor((offer.itemsCost * category.trader.multiplier) - offer.requirementsCost),
           }))
-          .filter((offer) => offer.profit > 1000)
+          .filter((offer) => offer.profit > 2000)
           .sort((a, b) => b.profit - a.profit);
 
         if (!mappedResults.length) {
@@ -209,7 +219,13 @@ export default async function auto(argv: ParsedArgs) {
             return waitRandom();
           }
 
-          return waitRandom(); // await instead to auto sell
+          return waitRandom(); // Comment out for auto sell
+          if (offer.profit > 10000) {
+            ora('Profit exceeds 10000, skipping auto sell').succeed();
+            return waitRandom();
+          }
+
+          await waitRandom();
           const sellingSpinner = ora(`Selling ${locale.templates[offer.raw.items[0]._tpl].Name} for ${offer.worth} (${offer.profit} Profit)`).start();
           try {
             const purchasedItem = buyResponse.items.new.find((item) => item._tpl === offer.raw.items[0]._tpl);

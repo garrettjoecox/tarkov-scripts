@@ -30,7 +30,7 @@ function randomHash(short: boolean = false): string {
   return hash;
 }
 
-export function decompress(buffer: Buffer): Promise<string> {
+export function decompress(buffer: Buffer): Promise<any> {
   return new Promise((resolve, reject) => {
     inflate(buffer, (err, result) => {
       if (err) reject(err);

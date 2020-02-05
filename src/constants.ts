@@ -1,4 +1,4 @@
-export const GAME_VERSION = '0.12.2.5707';
+export const GAME_VERSION = '0.12.3.5776';
 export const LAUNCHER_VERSION = '0.9.2.970';
 export const UNITY_VERSION = '2018.4.13f1';
 

@@ -6,6 +6,7 @@ import deals from './commands/deals';
 import auto from './commands/auto';
 import session from './commands/session';
 import test from './commands/test';
+import decrypt from './commands/decrypt';
 
 const commandMap: {[key: string]: Function} = {
   auth,
@@ -13,6 +14,7 @@ const commandMap: {[key: string]: Function} = {
   auto,
   session,
   test,
+  decrypt,
 };
 
 (async () => {

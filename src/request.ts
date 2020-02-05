@@ -22,10 +22,6 @@ export async function request(options: OptionsWithUrl): Promise<ApiResponse> {
       'X-Unity-Version': UNITY_VERSION,
       'Cookie': `PHPSESSID=${session}`, // TODO
     },
-    qs: {
-      launcherVersion: LAUNCHER_VERSION,
-      branch: 'live',
-    },
     encoding: null,
     transform: decompress,
   }));
@@ -56,6 +52,10 @@ export function launcherRequest(options: OptionsWithUrl) {
     baseUrl: LAUNCHER_ENDPOINT,
     headers: {
       'User-Agent': `BSG Launcher ${LAUNCHER_VERSION}`,
+    },
+    qs: {
+      launcherVersion: LAUNCHER_VERSION,
+      branch: 'live',
     },
   }));
 }
@@ -110,6 +110,10 @@ export function startGameRequest(form: { hwCode: string, accessToken: string }):
     headers: {
       'User-Agent': `BSG Launcher ${LAUNCHER_VERSION}`,
       'Authorization': form.accessToken,
+    },
+    qs: {
+      launcherVersion: LAUNCHER_VERSION,
+      branch: 'live',
     },
     body: {
       version: {
