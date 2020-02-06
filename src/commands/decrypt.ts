@@ -1,5 +1,4 @@
 import { ParsedArgs } from 'minimist';
-import { writeJSON } from 'fs-extra';
 
 import { set } from '../storage';
 import { decompress } from '../utils';

@@ -24,7 +24,7 @@ export enum OwnerType {
   Player = 2,
 }
 
-export interface MarketSearch {
+export interface MarketQuery {
   page: number;
   limit?: number;
   sortType?: SortType;
@@ -38,13 +38,15 @@ export interface MarketSearch {
   conditionTo?: number;
   oneHourExpiration?: boolean;
   removeBartering?: boolean;
-  ownerType?: OwnerType;
+  offerOwnerType?: OwnerType;
   onlyFunctional?: boolean;
   handbookId?: string;
   linkedSearchId?: string;
-  requiredSearchId?: string;
+  neededSearchId?: string;
   updateOfferCount?: boolean;
-  tm?: number;
+  buildItems?: any;
+  buildCount?: number;
+  tm?: 1;
 }
 
 export interface Offer {

@@ -1,9 +1,8 @@
-import { startGame } from '../auth';
 import { selectMainProfile } from '../profile';
-import { ParsedArgs } from 'minimist';
+import { gameStart } from '../launcher';
 
-export default async function deals(argv: ParsedArgs) {
-  await startGame();
+export default async function deals() {
+  await gameStart();
   await selectMainProfile();
   console.log('Session started');
 }

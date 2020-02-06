@@ -3,7 +3,7 @@ import { ParsedArgs } from 'minimist';
 
 import { get, set } from '../storage';
 import { hashString, generateHwCode } from '../utils';
-import { login, activateHardware } from '../auth';
+import { login, hardwareCodeActivate } from '../launcher';
 import { NewHardwareError } from '../errors';
 
 export default async function auth(argv: ParsedArgs) {
@@ -68,7 +68,7 @@ export default async function auth(argv: ParsedArgs) {
       message: 'New hardware code detected, Confirmation code has been sent to your email',
     });
 
-    await activateHardware({ email: credentials.email, code: hwCodeConfirm.code });
+    await hardwareCodeActivate({ email: credentials.email, activateCode: hwCodeConfirm.code });
     await login(credentials);
   }
 

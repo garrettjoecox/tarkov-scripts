@@ -1,14 +1,16 @@
-import { prodRequest, getProfilesRequest, selectProfileRequest } from './request';
-import { Profile, ProfileSide } from './types/profile';
+import { ProfileSide } from './types/profile';
+import { getProfilesRequest, selectProfilesRequest } from './api/profile';
 
-export async function getProfiles(): Promise<Profile[]> {
+export async function getProfiles() {
   const response = await getProfilesRequest();
 
   return response.data;
 }
 
 export async function selectProfile(profileId: string) {
-  const response = await selectProfileRequest(profileId);
+  const response = await selectProfilesRequest({
+    uid: profileId,
+  });
 
   return response.data;
 }

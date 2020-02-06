@@ -1,15 +1,12 @@
 import { defaultsDeep } from 'lodash';
 
-import { searchMarketRequest, sellToTraderRequest } from './request';
-import { MarketSearch, SortType, SortDirection, CurrencyType, OwnerType, Offer } from './types/market';
-import { buyOnFleaMarketRequest } from './request';
-import { getProfiles } from './profile';
-import { ProfileSide } from './types/profile';
-import { writeJSON } from 'fs-extra';
+import { MarketQuery, SortType, SortDirection, CurrencyType, OwnerType, Offer } from './types/market';
 import { ApiError } from './errors';
+import { searchMarketRequest, buyOnMarketRequest } from './api/market';
+import { getMoneyStack } from './utils';
 
-export async function searchMarket(marketSearch: MarketSearch) {
-  const response = await searchMarketRequest(defaultsDeep({}, marketSearch, {
+export async function searchMarket(marketQuery: MarketQuery) {
+  const response = await searchMarketRequest(defaultsDeep({}, marketQuery, {
     limit: 10,
     sortType: SortType.Price,
     sortDirection: SortDirection.DESC,
@@ -24,22 +21,23 @@ export async function searchMarket(marketSearch: MarketSearch) {
   return response.data;
 }
 
-export async function buyOnFleaMarket(offer: Offer) {
-  const profiles = await getProfiles();
-  const profile = profiles.find((profile) => profile.Info.Side !== ProfileSide.Savage);
+export async function buyOnMarket(offer: Offer) {
+  const moneyStack = await getMoneyStack(offer.requirementsCost);
 
-  const moneyStacks = profile.Inventory.items
-    .filter((item) => item._tpl === '5449016a4bdc2d6f028b456f')
-    .filter((item) => item.upd.StackObjectsCount > offer.requirementsCost)
-    .sort((a, b) => a.upd.StackObjectsCount - b.upd.StackObjectsCount);
-
-  if (!moneyStacks.length) console.log('Not enough money for that one!');
-  const moneyStack = moneyStacks[0];
-
-  const response = await buyOnFleaMarketRequest(offer._id, [{
-    id: moneyStack._id,
-    count: offer.requirementsCost,
-  }]);
+  const response = await buyOnMarketRequest({
+    data: [{
+      Action: 'RagFairBuyOffer',
+      offers: [{
+        id: offer._id,
+        count: 1,
+        items: [{
+          id: moneyStack._id,
+          count: offer.requirementsCost,
+        }],
+      }],
+    }],
+    tm: 2,
+  });
 
   if (response.data.badRequest.length) {
     throw new ApiError(response.data.badRequest[0].errmsg);
@@ -48,16 +46,6 @@ export async function buyOnFleaMarket(offer: Offer) {
   return response.data;
 }
 
-export async function sellOnFleaMarket() {
+export async function sellOnMarket(itemId: string, amount: number, price: number) {
 
-}
-
-export async function buyItem() {
-
-}
-
-export async function sellItem(traderId: string, itemId: string) {
-  const response = await sellToTraderRequest(traderId, itemId, 1);
-
-  return response.data;
 }

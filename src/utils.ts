@@ -3,6 +3,9 @@ import { inflate, deflate } from 'zlib';
 import { random } from 'lodash';
 
 import { get, set } from './storage';
+import { getProfiles } from './profile';
+import { ProfileSide, InvetoryItem } from './types/profile';
+import { Items } from './constants';
 
 export async function findOrCreateHwCode(): Promise<string> {
   let hwCode = await get('hwCode');
@@ -55,4 +58,16 @@ export function hashString(string: string): string {
 export function waitRandom(min: number = 2000, max: number = 5000): Promise<void> {
   const ms = random(min, max);
   return new Promise(r => setTimeout(r, ms));
+}
+
+export async function getMoneyStack(minAmount?: number): Promise<InvetoryItem> {
+  const profiles = await getProfiles();
+  const profile = profiles.find((profile) => profile.Info.Side !== ProfileSide.Savage);
+
+  const [moneyStack] = profile.Inventory.items
+    .filter((item) => item._tpl === Items.Roubles && (!minAmount || item.upd.StackObjectsCount > minAmount));
+
+  if (!moneyStack) throw new Error(`No money stacks above ${minAmount}`);
+
+  return moneyStack;
 }

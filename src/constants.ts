@@ -6,3 +6,22 @@ export const LAUNCHER_ENDPOINT = 'https://launcher.escapefromtarkov.com';
 export const PROD_ENDPOINT = 'https://prod.escapefromtarkov.com';
 export const TRADING_ENDPOINT = 'https://trading.escapefromtarkov.com';
 export const RAGFAIR_ENDPOINT = 'https://ragfair.escapefromtarkov.com';
+
+export enum Items {
+  Roubles = '5449016a4bdc2d6f028b456f',
+}
+
+export const Traders = {
+  skier: {
+    id: '58330581ace78e27b8b10cee',
+    multiplier: 0.67,
+  },
+  therapist: {
+    id: '54cb57776803fa99248b456e',
+    multiplier: 0.75,
+  },
+  mechanic: {
+    id: '5a7c2eca46aef81a7ca2145d',
+    multiplier: 0.57,
+  },
+};

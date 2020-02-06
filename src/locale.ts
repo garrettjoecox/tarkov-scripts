@@ -1,4 +1,4 @@
-import { prodRequest } from './request';
+import { prodRequest } from './api';
 
 interface Locale {
   interface: { [id: string]: string; };
@@ -60,7 +60,6 @@ let locale: Locale;
 export async function getLocale() {
   if (!locale) {
     const response = await prodRequest({
-      method: 'POST',
       url: '/client/locale/en',
     });
 
