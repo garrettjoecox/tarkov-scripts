@@ -15,6 +15,14 @@ export async function selectProfile(profileId: string) {
   return response.data;
 }
 
+export async function getMainProfile() {
+  const profiles = await getProfiles();
+
+  const profile = profiles.find((profile) => profile.Info.Side !== ProfileSide.Savage);
+
+  return profile;
+}
+
 export async function selectMainProfile() {
   const profiles = await getProfiles();
 

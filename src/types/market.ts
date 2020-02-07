@@ -25,7 +25,7 @@ export enum OwnerType {
 }
 
 export interface MarketQuery {
-  page: number;
+  page?: number;
   limit?: number;
   sortType?: SortType;
   sortDirection?: SortDirection;

@@ -12,7 +12,7 @@ export interface SearchMarketResponse extends ApiResponse {
 
 export interface BuyOnMarketRequestBody {
   data: {
-    Action: 'RagFairBuyOffer',
+    Action: 'RagFairBuyOffer';
     offers: {
       id: string;
       count: number;
@@ -41,7 +41,19 @@ export interface BuyOnMarketResponse extends ApiResponse {
 }
 
 export interface SellOnMarketRequestBody {
-
+  data: {
+    Action: 'RagFairAddOffer',
+    sell_in_one_piece: boolean;
+    items: string[];
+    requirements: {
+      _tpl: string;
+      count: number;
+      level: number;
+      side: number;
+      only_functional: boolean;
+    }[];
+  }[];
+  tm: 2;
 }
 
 export interface SellOnMarketResponse extends ApiResponse {

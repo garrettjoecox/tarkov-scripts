@@ -3,9 +3,10 @@ import { inflate, deflate } from 'zlib';
 import { random } from 'lodash';
 
 import { get, set } from './storage';
-import { getProfiles } from './profile';
+import { getProfiles, selectMainProfile } from './profile';
 import { ProfileSide, InvetoryItem } from './types/profile';
 import { Items } from './constants';
+import { tokenRefresh, gameStart } from './launcher';
 
 export async function findOrCreateHwCode(): Promise<string> {
   let hwCode = await get('hwCode');
@@ -70,4 +71,30 @@ export async function getMoneyStack(minAmount?: number): Promise<InvetoryItem> {
   if (!moneyStack) throw new Error(`No money stacks above ${minAmount}`);
 
   return moneyStack;
+}
+
+export async function ensureAuthenticated(): Promise<void> {
+  let validSession: boolean;
+  try {
+    await getProfiles();
+    validSession = true;
+  } catch (error) {
+    validSession = false;
+  }
+
+  if (!validSession) {
+    const tokenExpiration = await get('auth.tokenExpiration');
+    if (tokenExpiration < Date.now()) {
+      console.log('Access token expired, refreshing');
+      await tokenRefresh();
+    } else {
+      console.log('Access token still valid');
+    }
+
+    console.log('Starting session');
+    await gameStart();
+    await selectMainProfile();
+  } else {
+    console.log('Already authenticated');
+  }
 }

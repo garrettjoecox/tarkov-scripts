@@ -6,7 +6,7 @@ import { shuffle } from 'lodash';
 import { buyOnMarket, searchMarket } from '../market';
 import { sellToTrader } from '../traders';
 import { SortType, SortDirection, CurrencyType, OwnerType } from '../types/market';
-import { waitRandom } from '../utils';
+import { waitRandom, ensureAuthenticated } from '../utils';
 import { getLocale } from '../locale';
 import { InvetoryItem } from '../types/profile';
 
@@ -231,6 +231,7 @@ const categories = [
 ];
 
 export default async function auto(argv: ParsedArgs) {
+  await ensureAuthenticated();
   const locale = await getLocale();
 
   const userInput = await prompt([{

@@ -5,14 +5,14 @@ import auth from './commands/auth';
 import auto from './commands/auto';
 import session from './commands/session';
 import test from './commands/test';
-import decrypt from './commands/decrypt';
+import sellbox from './commands/sellbox';
 
 const commandMap: {[key: string]: Function} = {
   auth,
   auto,
   session,
   test,
-  decrypt,
+  sellbox,
 };
 
 (async () => {

@@ -2,8 +2,9 @@ import { defaultsDeep } from 'lodash';
 
 import { MarketQuery, SortType, SortDirection, CurrencyType, OwnerType, Offer } from './types/market';
 import { ApiError } from './errors';
-import { searchMarketRequest, buyOnMarketRequest } from './api/market';
+import { searchMarketRequest, buyOnMarketRequest, sellOnMarketRequest } from './api/market';
 import { getMoneyStack } from './utils';
+import { Items } from './constants';
 
 export async function searchMarket(marketQuery: MarketQuery) {
   const response = await searchMarketRequest(defaultsDeep({}, marketQuery, {
@@ -46,6 +47,26 @@ export async function buyOnMarket(offer: Offer) {
   return response.data;
 }
 
-export async function sellOnMarket(itemId: string, amount: number, price: number) {
+export async function sellOnMarket(itemId: string, price: number) {
+  const response = await sellOnMarketRequest({
+    data: [{
+      Action: 'RagFairAddOffer',
+      sell_in_one_piece: false,
+      items: [itemId],
+      requirements: [{
+        _tpl: Items.Roubles,
+        count: price,
+        level: 0,
+        side: 0,
+        only_functional: false,
+      }],
+    }],
+    tm: 2,
+  });
 
+  if (response.data.badRequest.length) {
+    throw new ApiError(response.data.badRequest[0].errmsg);
+  }
+
+  return response.data;
 }

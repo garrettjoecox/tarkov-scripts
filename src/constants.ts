@@ -24,4 +24,20 @@ export const Traders = {
     id: '5a7c2eca46aef81a7ca2145d',
     multiplier: 0.57,
   },
+  fence: {
+    id: '579dc571d53a0658a154fbec',
+    multiplier: 0.30,
+  },
+  prapor: {
+    id: '54cb50c76803fa8b248b4571',
+    multiplier: 0.55,
+  },
+  ragman: {
+    id: '5ac3b934156ae10c4430e83c',
+    multiplier: 0.60,
+  },
+  jaeger: {
+    id: '5c0647fdd443bc2504c2d371',
+    multiplier: 0.55,
+  },
 };

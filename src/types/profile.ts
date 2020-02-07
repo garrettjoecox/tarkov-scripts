@@ -1,3 +1,4 @@
+import { Offer } from './market';
 
 export enum ProfileSide {
   Bear = "Bear",
@@ -13,12 +14,16 @@ export interface Profile {
   };
   Inventory: {
     items: InvetoryItem[];
-  }
+  };
+  RagfairInfo: {
+    offers: Offer[];
+  };
 }
 
 export interface InvetoryItem {
   _id: string;
   _tpl: string;
+  parentId?: string;
   upd?: {
     StackObjectsCount: number;
   }
