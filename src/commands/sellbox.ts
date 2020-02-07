@@ -54,18 +54,18 @@ export default async function sellbox(argv: ParsedArgs) {
           ora(`Average cheapest price is ${average}`).succeed();
 
           let price: number;
-          // if ((average - cheapest[0].requirementsCost) < 2000) {
-            const deltas = cheapest.reduce((arr: number[], offer: Offer, index: number, offers: Offer[]) => {
-              index && arr.push(offer.requirementsCost - offers[index - 1].requirementsCost);
-              return arr;
-            }, []);
-            const averageDelta = Math.floor(_.mean(deltas));
+          const deltas = cheapest.reduce((arr: number[], offer: Offer, index: number, offers: Offer[]) => {
+            index && arr.push(offer.requirementsCost - offers[index - 1].requirementsCost);
+            return arr;
+          }, []);
+          const averageDelta = Math.floor(_.mean(deltas));
+
+          if (cheapest.length > 2) {
+            price = cheapest[1].requirementsCost - averageDelta;
+          } else {
             price = average - averageDelta;
-            ora(`Undercutting by average delta (${averageDelta})`).succeed();
-          // } else {
-          //   price = average;
-          //   ora('Selling for average');
-          // }
+          }
+          ora(`Undercutting by average delta (${averageDelta})`).succeed();
 
           const listingSpinner = ora(`Creating listing for ${locale.templates[itemToSell._tpl].Name} for ${price}`).start();
           try {
