@@ -1,13 +1,16 @@
 import { ParsedArgs } from 'minimist';
 import { writeJSON } from 'fs-extra';
-import { tradingRequest } from '../api';
-import { Traders } from '../constants';
+import { prodRequest, tradingRequest } from '../api';
+import { TRADERS } from '../constants';
+import { random } from 'lodash';
+import { throttle } from '../utils';
 
 export default async function deals(argv: ParsedArgs) {
-  const response = await tradingRequest({
-    url: `/client/trading/api/getUserAssortPrice/trader/${Traders.skier.id}`,
-  });
+  // const response = await tradingRequest({
+  //   url: `/client/trading/api/getUserAssortPrice/trader/${TRADERS.therapist.id}`,
+  // });
 
-  await writeJSON('data.json', response, { spaces: 2 });
-  console.log('Written to JSON');
+  // await writeJSON('data/userAssort.json', response, { spaces: 2 });
+
+  process.exit();
 }

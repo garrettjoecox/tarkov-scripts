@@ -4,7 +4,7 @@ import _ from 'lodash';
 import ora from 'ora';
 
 import { getMainProfile } from '../profile';
-import { waitRandom, ensureAuthenticated } from '../utils';
+import { ensureAuthenticated } from '../utils';
 import { getLocale } from '../locale';
 import { searchMarket, sellOnMarket } from '../market';
 import { SortType, SortDirection, CurrencyType, OwnerType, Offer } from '../types/market';
@@ -20,7 +20,6 @@ export default async function sellbox(argv: ParsedArgs) {
   } else {
     ora('Sell container not found').fail();
   }
-  await waitRandom();
 
   return (async function loop(): Promise<void> {
     profile = await getMainProfile();
@@ -32,7 +31,6 @@ export default async function sellbox(argv: ParsedArgs) {
         const itemToSell = itemsToSell[0];
 
         const searchingSpinner = ora(`Searching market for ${locale.templates[itemToSell._tpl].Name}`).start();
-        await waitRandom();
         const searchResults = await searchMarket({
           sortType: SortType.Price,
           sortDirection: SortDirection.ASC,
@@ -69,7 +67,6 @@ export default async function sellbox(argv: ParsedArgs) {
 
           const listingSpinner = ora(`Creating listing for ${locale.templates[itemToSell._tpl].Name} for ${price}`).start();
           try {
-            await waitRandom();
             await sellOnMarket(itemToSell._id, price);
 
             listingSpinner.succeed();
@@ -87,7 +84,6 @@ export default async function sellbox(argv: ParsedArgs) {
     } else {
       ora('3/3 Offers on flea market').fail();
     }
-    await waitRandom(5000, 10000);
     return loop();
   })();
 }

@@ -5,7 +5,7 @@ import { random } from 'lodash';
 import { get, set } from './storage';
 import { getProfiles, selectMainProfile } from './profile';
 import { ProfileSide, InvetoryItem } from './types/profile';
-import { Items } from './constants';
+import { ITEMS } from './constants';
 import { tokenRefresh, gameStart } from './launcher';
 
 export async function findOrCreateHwCode(): Promise<string> {
@@ -66,7 +66,7 @@ export async function getMoneyStack(minAmount?: number): Promise<InvetoryItem> {
   const profile = profiles.find((profile) => profile.Info.Side !== ProfileSide.Savage);
 
   const [moneyStack] = profile.Inventory.items
-    .filter((item) => item._tpl === Items.Roubles && (!minAmount || item.upd.StackObjectsCount > minAmount));
+    .filter((item) => item._tpl === ITEMS.roubles && (!minAmount || item.upd.StackObjectsCount > minAmount));
 
   if (!moneyStack) throw new Error(`No money stacks above ${minAmount}`);
 
@@ -98,3 +98,25 @@ export async function ensureAuthenticated(): Promise<void> {
     console.log('Already authenticated');
   }
 }
+
+const queue: Function[] = [];
+let lastWork: number = 0;
+
+export async function throttle() {
+  return new Promise(resolve => {
+    queue.push(resolve);
+  });
+}
+
+(function work() {
+  if (!queue.length) return setTimeout(work, 1000);
+  const waitTime = random(2000, 5000);
+
+  if ((Date.now() - lastWork) > 2000) {
+    queue.shift()();
+    lastWork = Date.now();
+    setTimeout(work, waitTime);
+  } else {
+    setTimeout(work, (lastWork + waitTime) - Date.now());
+  }
+})();

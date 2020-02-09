@@ -4,7 +4,7 @@ import { MarketQuery, SortType, SortDirection, CurrencyType, OwnerType, Offer } 
 import { ApiError } from './errors';
 import { searchMarketRequest, buyOnMarketRequest, sellOnMarketRequest } from './api/market';
 import { getMoneyStack } from './utils';
-import { Items } from './constants';
+import { ITEMS } from './constants';
 
 export async function searchMarket(marketQuery: MarketQuery) {
   const response = await searchMarketRequest(defaultsDeep({}, marketQuery, {
@@ -54,7 +54,7 @@ export async function sellOnMarket(itemId: string, price: number) {
       sell_in_one_piece: false,
       items: [itemId],
       requirements: [{
-        _tpl: Items.Roubles,
+        _tpl: ITEMS.roubles,
         count: price,
         level: 0,
         side: 0,

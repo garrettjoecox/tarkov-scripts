@@ -15,4 +15,6 @@ export default async function session(argv: ParsedArgs) {
     await selectMainProfile();
     console.log('Session started');
   }
+
+  process.exit();
 }

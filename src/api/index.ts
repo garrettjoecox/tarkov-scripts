@@ -1,7 +1,7 @@
 import _request, { OptionsWithUrl } from 'request-promise-native';
 import { defaultsDeep } from 'lodash';
 
-import { decompress, compress } from '../utils';
+import { decompress, compress, throttle } from '../utils';
 import { get } from '../storage';
 import { ApiResponse, KeepAliveResponse } from '../types/api';
 import { ApiError, EnterCaptchaError, NewHardwareError, WrongCredentialsError, WrongActivationCodeError, NotAuthorizedError, BadAccountIdError } from '../errors';
@@ -18,6 +18,7 @@ export async function request(options: OptionsWithUrl, auth: boolean = true): Pr
     options.body = await compress(options.body);
   }
 
+  await throttle();
   const response: ApiResponse = await _request(defaultsDeep({}, options, {
     method: 'POST',
     headers: {

@@ -7,11 +7,11 @@ export const PROD_ENDPOINT = 'https://prod.escapefromtarkov.com';
 export const TRADING_ENDPOINT = 'https://trading.escapefromtarkov.com';
 export const RAGFAIR_ENDPOINT = 'https://ragfair.escapefromtarkov.com';
 
-export enum Items {
-  Roubles = '5449016a4bdc2d6f028b456f',
+export enum ITEMS {
+  roubles = '5449016a4bdc2d6f028b456f',
 }
 
-export const Traders = {
+export const TRADERS = {
   skier: {
     id: '58330581ace78e27b8b10cee',
     multiplier: 0.67,
