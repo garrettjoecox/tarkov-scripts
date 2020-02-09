@@ -21,10 +21,12 @@ const commandMap: {[key: string]: Function} = {
 
     if (commandMap[argv._[0]]) {
       await commandMap[argv._[0]](argv);
+      process.exit();
     } else {
       // Help
     }
   } catch (error) {
     console.error(error);
+    process.exit();
   }
 })();

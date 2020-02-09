@@ -73,5 +73,4 @@ export default async function auth(argv: ParsedArgs) {
   }
 
   console.log('Successfully authenticated');
-  process.exit();
 }

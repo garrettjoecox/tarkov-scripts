@@ -11,6 +11,4 @@ export default async function deals(argv: ParsedArgs) {
   // });
 
   // await writeJSON('data/userAssort.json', response, { spaces: 2 });
-
-  process.exit();
 }
