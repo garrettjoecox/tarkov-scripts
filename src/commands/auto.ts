@@ -7,7 +7,7 @@ import { buyOnMarket, searchMarket } from '../market';
 import { sellToTrader } from '../traders';
 import { SortType, SortDirection, CurrencyType, OwnerType } from '../types/market';
 import { ensureAuthenticated } from '../utils';
-import { getLocale } from '../locale';
+import { getLocale } from '../static';
 import { InvetoryItem } from '../types/profile';
 import { TRADERS } from '../constants';
 
@@ -303,7 +303,6 @@ export default async function auto(argv: ParsedArgs) {
             return;
           }
 
-          // return waitRandom(); // Comment out for auto sell
           if (offer.profit > userInput.maximumProfit) {
             ora(`Profit exceeds ${userInput.maximumProfit}, skipping auto sell`).succeed();
             profitTotal += offer.profit;

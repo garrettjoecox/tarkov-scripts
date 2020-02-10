@@ -1,6 +1,6 @@
-import { prodRequest } from './api';
+import { ApiResponse } from './index';
 
-interface Locale {
+export interface Locale {
   interface: { [id: string]: string; };
   error: { [id: string]: string; };
   mail: { [id: string]: string; };
@@ -55,16 +55,41 @@ interface Locale {
   };
 }
 
-let locale: Locale;
+export interface GetLocaleResponse extends ApiResponse {
+  data: Locale
+}
 
-export async function getLocale() {
-  if (!locale) {
-    const response = await prodRequest({
-      url: '/client/locale/en',
-    });
+export interface Items {
+  [index: string]: {
+    _id: string;
+    _name: string;
+    _parent: string;
+    _type: string;
+    _props: {
+      CreditsPrice: number;
+    }
+  };
+}
 
-    locale = response.data;
-  }
+export interface GetItemsResponse extends ApiResponse {
+  data: Items;
+}
 
-  return locale;
+export interface Templates {
+  Categories: {
+    Id: string;
+    ParentId: string;
+    Icon: string;
+    Color: string;
+    Order: string;
+  }[];
+  Items: {
+    Id: string;
+    ParentId: string;
+    Price: number;
+  }[];
+}
+
+export interface GetTemplatesResponse extends ApiResponse {
+  data: Templates;
 }

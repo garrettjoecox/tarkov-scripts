@@ -7,6 +7,8 @@ import { getProfiles, selectMainProfile } from './profile';
 import { ProfileSide, InvetoryItem } from './types/profile';
 import { ITEMS } from './constants';
 import { tokenRefresh, gameStart } from './launcher';
+import { getTemplates } from './static';
+import { CATEGORIES } from './constants';
 
 export async function findOrCreateHwCode(): Promise<string> {
   let hwCode = await get('hwCode');
@@ -99,6 +101,17 @@ export async function ensureAuthenticated(): Promise<void> {
   }
 }
 
+export async function getBestTraderToSellItemTo(itemId: string): Promise<{id: string, multiplier: number}> {
+  const templates = await getTemplates();
+  const template = templates.Items.find((item) => item.Id === itemId);
+  const category = CATEGORIES[template.ParentId];
+
+  if (!category) throw new Error(`Invalid category ${template.ParentId}`);
+  if (!category.traders.length) throw new Error(`No traders for category ${category.name}`);
+
+  return category.traders.sort((a, b) => b.multiplier - a.multiplier)[0];
+}
+
 const queue: Function[] = [];
 let lastWork: number = 0;
 
@@ -110,9 +123,9 @@ export async function throttle() {
 
 (function work() {
   if (!queue.length) return setTimeout(work, 1000);
-  const waitTime = random(2000, 5000);
+  const waitTime = random(3000, 5000);
 
-  if ((Date.now() - lastWork) > 2000) {
+  if ((Date.now() - lastWork) > 3000) {
     queue.shift()();
     lastWork = Date.now();
     setTimeout(work, waitTime);
