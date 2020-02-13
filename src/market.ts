@@ -47,12 +47,12 @@ export async function buyOnMarket(offer: Offer) {
   return response.data;
 }
 
-export async function sellOnMarket(itemId: string, price: number) {
+export async function sellOnMarket(itemId: string | string[], price: number) {
   const response = await sellOnMarketRequest({
     data: [{
       Action: 'RagFairAddOffer',
       sell_in_one_piece: false,
-      items: [itemId],
+      items: Array.isArray(itemId) ? itemId : [itemId],
       requirements: [{
         _tpl: ITEMS.roubles,
         count: price,

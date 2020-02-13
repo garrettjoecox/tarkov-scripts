@@ -6,6 +6,7 @@ import auto from './commands/auto';
 import session from './commands/session';
 import test from './commands/test';
 import sellbox from './commands/sellbox';
+import sellForMore from './commands/sellForMore';
 
 const commandMap: {[key: string]: Function} = {
   auth,
@@ -13,6 +14,7 @@ const commandMap: {[key: string]: Function} = {
   session,
   test,
   sellbox,
+  sellForMore,
 };
 
 (async () => {
