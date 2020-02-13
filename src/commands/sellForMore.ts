@@ -44,8 +44,6 @@ export default async function sellForMore(argv: ParsedArgs) {
     } else {
       // If not buy more
       const searchResults = await searchMarket({
-        page: 1,
-        limit: 100,
         sortType: SortType.Price,
         sortDirection: SortDirection.ASC,
         currency: CurrencyType.Rouble,
