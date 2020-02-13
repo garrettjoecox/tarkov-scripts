@@ -44,12 +44,15 @@ export async function request(options: OptionsWithUrl, auth: boolean = true): Pr
   return response;
 }
 
+let requestId = 1;
+
 export function clientRequest(options: OptionsWithUrl, auth: boolean = true) {
   return request(defaultsDeep({}, options, {
     headers: {
       'User-Agent': `UnityPlayer/${UNITY_VERSION} (UnityWebRequest/1.0, libcurl/7.52.0-DEV)`,
       'App-Version': `EFT Client ${GAME_VERSION}`,
       'X-Unity-Version': UNITY_VERSION,
+      'GClient-RequestId': requestId++,
     },
   }), auth);
 }
