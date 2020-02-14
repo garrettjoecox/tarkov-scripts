@@ -1,5 +1,5 @@
 export const GAME_VERSION = '0.12.3.5834';
-export const LAUNCHER_VERSION = '0.9.3.1011';
+export const LAUNCHER_VERSION = '0.9.3.1023';
 export const UNITY_VERSION = '2018.4.13f1';
 
 export const LAUNCHER_ENDPOINT = 'https://launcher.escapefromtarkov.com';
