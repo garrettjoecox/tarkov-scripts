@@ -22,7 +22,7 @@ Will ask you a few questions, and begin buying items from the flea market and se
 This will look for a container in your inventory tagged `sell` and begin selling items either on the flea market or just to traders based on your specified margin.
 
 ## Disclaimer
-As I said I got banned, use this at your own risk. I will not be able to update it any further or give any support, as it was an IP ban as well. Good luck :)
+As I said I got banned, use this at your own risk. I will not be able to update it any further till I get my hands on another account. Until then feel free to submit PR's
 
 ## Todo:
 - KeepAlive request
