@@ -17,7 +17,7 @@
   "dependencies": {
     "fs-extra": "^8.1.0",
     "inquirer": "^7.0.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "minimist": "^1.2.0",
     "ora": "^4.0.3",
     "request": "^2.88.0",
