@@ -18,7 +18,7 @@
     "fs-extra": "^8.1.0",
     "inquirer": "^7.0.4",
     "lodash": "^4.17.15",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.6",
     "ora": "^4.0.3",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.8"
